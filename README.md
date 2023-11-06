@@ -4,4 +4,7 @@ El CCI se calcula como el cociente entre el número de píxeles clasificados com
 
 ## Integrantes del equipo:
 - Alatorre Méndez Sofía Guadalupe
-- ...
+- Cornejo de la Mora Iñaki
+- Granados Rovira José Pablo 
+- Moreno Castro Fernanda
+- Orta Castillo Maria de los Angeles
