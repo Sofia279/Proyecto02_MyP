@@ -18,7 +18,7 @@ def main():
         img = CloudImage(fname)
         if args.save:
             img.write_conv()
-        print(f"{img.name}: {img.cloud_cov}")
+        print(f"Indice de cobertura nubosa de la imagen {img.name}: {round(img.cloud_cov, 4)}")
 if __name__ == "__main__":
     main()
     
