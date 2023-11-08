@@ -4,7 +4,6 @@ import pathlib
 import unittest
 from unittest.mock import patch
 from cloud import write_conv
-from cloud import cloud_cov
 import timeit
 
 class MainTestCase(unittest.TestCase):
