@@ -17,7 +17,10 @@ class CloudImage:
     @property
     def cloud_cov(self):
         if self._cloud_cov is None:
-            pass
+            with Image.open(self.path) as image, Image.open("mask.png") as mask:
+                image.paste(CloudImage.pink, mask=mask)
+                self.rb_filter(image)
+                self.convolution(image)
         return self._cloud_cov
 
     def write_conv(self):
