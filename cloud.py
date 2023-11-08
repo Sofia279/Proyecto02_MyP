@@ -17,7 +17,8 @@ class CloudImage:
     @property
     def cloud_cov(self):
         if self._cloud_cov is None:
-            with Image.open(self.path) as image, Image.open("mask.png") as mask:
+            with Image.open(self.path) as image, \
+                 Image.open("mask.png") as mask:
                 image.paste(CloudImage.pink, mask=mask)
                 self.rb_filter(image)
                 self.convolution(image)
@@ -42,7 +43,7 @@ class CloudImage:
                 if (pixel := px[x, y]) == CloudImage.pink:
                     continue
                 r, g, b = pixel
-                if b == 0 or r / b  >= 0.95:
+                if b == 0 or r / b >= 0.95:
                     px[x, y] = CloudImage.white
                 else:
                     px[x, y] = CloudImage.black
@@ -53,7 +54,6 @@ class CloudImage:
         px = temp.load()
         pxout = image.load()
         sky = cloud = 0
-        changes = 0
         for x in range(width):
             for y in range(height):
                 if px[x, y] == CloudImage.pink:
