@@ -19,3 +19,6 @@ for fname in args.images:
     if args.save:
         img.write_conv()
     print(f"{img.name}: {img.cloud_cov}")
+if __main__ == "__main__":
+    main()
+    
