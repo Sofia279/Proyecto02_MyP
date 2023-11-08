@@ -98,7 +98,7 @@ class CloudImage:
                     pxout[x, y] = CloudImage.white
                     cloud += 1
                 elif pxout[x, y] == CloudImage.white:
-                    cloud += 1
+                    cloud += 1  
                 else:
                     sky += 1
         self._cloud_cov = cloud / (cloud + sky)
