@@ -3,6 +3,10 @@ from pathlib import Path
 
 
 class CloudImage:
+    black = (0, 0, 0)
+    white = (255, 255, 255)
+    pink = (228, 0, 124)
+
     def __init__(self, path):
         self.path = path
         self.name = path.stem
@@ -27,7 +31,17 @@ class CloudImage:
             image.save(output_dir / output_file)
 
     def rb_filter(self, image):
-        pass
+        width, height = image.size
+        px = image.load()
+        for x in range(width):
+            for y in range(height):
+                if (pixel := px[x, y]) == CloudImage.pink:
+                    continue
+                r, g, b = pixel
+                if b == 0 or r / b  >= 0.95:
+                    px[x, y] = CloudImage.white
+                else:
+                    px[x, y] = CloudImage.black
 
     def convolution(self, image):
         pass
