@@ -29,11 +29,23 @@ class CloudImage:
         Return: Valor calculado de la covertura de imagenes
         '''
         if self._cloud_cov is None:
+            sky = cloud = 0
             with Image.open(self.path) as image, \
                  Image.open("mask.png") as mask:
                 image.paste(CloudImage.pink, mask=mask)
                 self.rb_filter(image)
                 self.convolution(image)
+                width, height = image.size
+                px = image.load()
+                for x in range(width):
+                    for y in range(height):
+                        if px[x, y] == CloudImage.pink:
+                            continue
+                        elif px[x, y] == CloudImage.white:
+                            cloud += 1
+                        else:
+                            sky += 1
+                self._cloud_cov = cloud / (cloud + sky)
         return self._cloud_cov
 
     def write_conv(self):
@@ -45,6 +57,7 @@ class CloudImage:
             image.paste(CloudImage.pink, mask=mask)
             self.rb_filter(image)
             self.convolution(image)
+            image.paste(CloudImage.black, mask=mask)
             output_dir = Path("output")
             if not output_dir.exists():
                 output_dir.mkdir()
@@ -79,11 +92,9 @@ class CloudImage:
         temp = image.copy()
         px = temp.load()
         pxout = image.load()
-        sky = cloud = 0
         for x in range(width):
             for y in range(height):
                 if px[x, y] == CloudImage.pink:
-                    pxout[x, y] = CloudImage.black
                     continue
                 weight = 0
                 for i in range(x - 2, x + 3):
@@ -93,15 +104,8 @@ class CloudImage:
                             weight += 1
                 if weight <= 7:
                     pxout[x, y] = CloudImage.black
-                    sky += 1
                 elif weight > 16:
                     pxout[x, y] = CloudImage.white
-                    cloud += 1
-                elif pxout[x, y] == CloudImage.white:
-                    cloud += 1
-                else:
-                    sky += 1
-        self._cloud_cov = cloud / (cloud + sky)
 
     @lru_cache(maxsize=12500)
     def cached_access(self, px, x, y):
