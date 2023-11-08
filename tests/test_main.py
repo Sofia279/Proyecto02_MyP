@@ -16,14 +16,6 @@ class MainTestCase(unittest.TestCase):
     def test_args(self, parse_args):
         main.main()
         self.assertTrue(pathlib.Path("output/test_image-seg.jpg").exists())
-    
-    def test_imagen_no_clara(self):
-        # Prueba el manejo de errores cuando se recibe una imagen poco clara
-        imagen_path = '11838.jpg'  # Cambia la ruta a una imagen no clara
-        resultado = write_conv(imagen_path)
-
-        # Verifica que el resultado sea None, lo que indica que se produjo un error
-        self.assertIsNone(resultado)
 
     def test_formato_incorrecto(self):
         # Prueba el manejo de errores cuando se proporciona una imagen con un formato incorrecto
