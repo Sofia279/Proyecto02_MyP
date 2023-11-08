@@ -1,4 +1,5 @@
 from PIL import Image
+from functools import lru_cache
 from pathlib import Path
 
 
@@ -44,4 +45,35 @@ class CloudImage:
                     px[x, y] = CloudImage.black
 
     def convolution(self, image):
-        pass
+        width, height = image.size
+        temp = image.copy()
+        px = temp.load()
+        pxout = image.load()
+        sky = cloud = 0
+        changes = 0
+        for x in range(width):
+            for y in range(height):
+                if px[x, y] == CloudImage.pink:
+                    pxout[x, y] = CloudImage.black
+                    continue
+                weight = 0
+                for i in range(x - 2, x + 3):
+                    for j in range(y - 2, y + 3):
+                        p = self.cached_access(px, i, j)
+                        if p == CloudImage.white:
+                            weight += 1
+                if weight <= 7:
+                    pxout[x, y] = CloudImage.black
+                    sky += 1
+                elif weight > 16:
+                    pxout[x, y] = CloudImage.white
+                    cloud += 1
+                elif pxout[x, y] == CloudImage.white:
+                    cloud += 1
+                else:
+                    sky += 1
+        self._cloud_cov = cloud / (cloud + sky)
+
+    @lru_cache(maxsize=12500)
+    def cached_access(self, px, x, y):
+        return px[x, y]
