@@ -12,6 +12,8 @@ class CloudImage:
         self.path = path
         self.name = path.stem
         self.suffix = path.suffix
+        if not self.suffix in [".jpg", ".jpeg"]:
+            raise(Exception("Necesita un archivo .jpg"))
         self._cloud_cov = None
 
     @property
