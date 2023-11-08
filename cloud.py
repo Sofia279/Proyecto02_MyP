@@ -2,13 +2,20 @@ from PIL import Image
 from functools import lru_cache
 from pathlib import Path
 
-
 class CloudImage:
+    '''
+    Clase que permite convertir imagenes y determinar cobertura de nubes
+    '''
     black = (0, 0, 0)
     white = (255, 255, 255)
     pink = (228, 0, 124)
 
     def __init__(self, path):
+        '''
+        Constructor de la clase
+        Args: Ruta del archivo
+        Return: void
+        '''
         self.path = path
         self.name = path.stem
         self.suffix = path.suffix
@@ -16,6 +23,11 @@ class CloudImage:
 
     @property
     def cloud_cov(self):
+        '''
+        Nos da el valor calculado de la covertura de imagenes y si no se ha calculado
+        mediante el filtrado de pixeles y el metodo de convolucion lo calcula
+        Return: Valor calculado de la covertura de imagenes
+        '''
         if self._cloud_cov is None:
             with Image.open(self.path) as image, \
                  Image.open("mask.png") as mask:
@@ -25,6 +37,10 @@ class CloudImage:
         return self._cloud_cov
 
     def write_conv(self):
+        '''
+        Guarda la imagen procesada en una ruta especifada en el directorio
+        output de salida donde lo crea o ya existe
+        '''
         with Image.open(self.path) as image, Image.open("mask.png") as mask:
             image.paste(CloudImage.pink, mask=mask)
             self.rb_filter(image)
@@ -36,6 +52,11 @@ class CloudImage:
             image.save(output_dir / output_file)
 
     def rb_filter(self, image):
+        '''
+        Identifica los pixeles relacionados con las nubes, y marca dependiendo
+        su caso en rosa, blanco o negro
+        Args: Imagen donde se realizan las operaciones
+        '''
         width, height = image.size
         px = image.load()
         for x in range(width):
@@ -49,6 +70,11 @@ class CloudImage:
                     px[x, y] = CloudImage.black
 
     def convolution(self, image):
+        '''
+        Analiza la distribucion de pixeles en una imagen, para determinar que areas
+        son del cielo y que areas son de la nube, mediante convolucion
+        Args: imagen donde se realizan operaciones de convolucion
+        '''
         width, height = image.size
         temp = image.copy()
         px = temp.load()
@@ -79,4 +105,10 @@ class CloudImage:
 
     @lru_cache(maxsize=12500)
     def cached_access(self, px, x, y):
+        '''
+        Almacena los pixeles en cache y accesa a ellos
+        Args: Pixeles en una imagen en la que se desea accesar
+        x,y coordenadas
+        Return: pixel dado en la coordenada x,y
+        '''
         return px[x, y]
