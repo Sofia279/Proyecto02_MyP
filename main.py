@@ -2,7 +2,7 @@ import argparse
 from cloud import CloudImage
 import pathlib
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("images", help="archivos de imagenes",
                         nargs='+', type=pathlib.Path)
